@@ -51,7 +51,12 @@ class AdminController extends Controller
         return redirect(route('block'));
     }
 
-    function update(){
-        DB::table('blogs')->where('id',$id)->update();
+    function update($id){
+        $blog=DB::table('blogs')->where('id',$id)->first();
+        $data=[
+            'status'=>!$blog->status
+        ];
+        DB::table('blogs')->where('id',$id)->update($data);
+        return redirect(route('block'));
     }
 }
