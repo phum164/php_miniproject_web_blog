@@ -51,12 +51,42 @@ class AdminController extends Controller
         return redirect(route('block'));
     }
 
-    function update($id){
+    function change($id){
         $blog=DB::table('blogs')->where('id',$id)->first();
         $data=[
             'status'=>!$blog->status
         ];
         DB::table('blogs')->where('id',$id)->update($data);
         return redirect(route('block'));
+    }
+
+    function edit($id){
+        $blog=DB::table('blogs')->where('id',$id)->first();
+        // dd($blog);
+        return view('edit',compact('blog'));
+    }
+
+    function update(Request $request,$id){
+        $time = date('Y-m-d H:i:s',time());
+        $request->validate(
+            [
+                // ตรวจสอบข้อมูลที่ส่งมาจากฟอร์ม name = title
+                'title'=>'required|max:50', 
+                // ตรวจสอบข้อมูลที่ส่งมาจากฟอร์มชื่อ name = content
+                'content'=>'required'
+            ],
+            [
+                'title.required'=>'กรุณาป้อนชื่อบทความ',
+                'title.max' => 'ชื่อบทความไม่เกิน 50 ตัวอักษร',
+                'content' => 'กรุณาป้อนเนื้อหาบทความ'
+            ]
+        );
+        $data=[
+            'title'=>$request->title,
+            'content'=>$request->content,
+            'updated_at'=>$time
+        ];
+        DB::table('blogs')->where('id',$id)->update($data);
+        return redirect('/all');
     }
 }
