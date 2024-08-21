@@ -43,8 +43,9 @@
                 @endforeach
             </tbody>
         </table>
+        
     </div>
-
+    {{$blogs->links()}}
     <a href="about">เกี่ยวกับเรา</a>
     <a href="{{ route('page') }}">first page</a>
 @endsection
