@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Blog; //นำ model มาใช้
 class AdminController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     function index(){
-        $blogs=DB::table('blogs')->paginate(5);
+        // $blogs=DB::table('blogs')->paginate(5);
+        $blogs=Blog::paginate(5);
         return view('all',compact('blogs'));
     }
 
@@ -22,6 +29,7 @@ class AdminController extends Controller
     }
 
     function insert(Request $request){
+        //request คือ array ที่รับเข้ามาจาก post method
         $time = date('Y-m-d H:i:s',time());
         $request->validate(
             [
@@ -47,7 +55,8 @@ class AdminController extends Controller
     }
 
     function delete($id){
-        DB::table('blogs')->where('id',$id)->delete();
+        // DB::table('blogs')->where('id',$id)->delete();
+        Blog::find($id)->delete();
         return redirect(route('block'));
     }
 
@@ -86,7 +95,8 @@ class AdminController extends Controller
             'content'=>$request->content,
             'updated_at'=>$time
         ];
-        DB::table('blogs')->where('id',$id)->update($data);
+        // DB::table('blogs')->where('id',$id)->update($data);
+        DB::insert($data);
         return redirect('/all');
     }
 }
