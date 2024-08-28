@@ -61,16 +61,20 @@ class AdminController extends Controller
     }
 
     function change($id){
-        $blog=DB::table('blogs')->where('id',$id)->first();
+        // $blog=DB::table('blogs')->where('id',$id)->first();
+        $blog=Blog::find($id);
         $data=[
             'status'=>!$blog->status
         ];
-        DB::table('blogs')->where('id',$id)->update($data);
-        return redirect(route('block'));
+        // DB::table('blogs')->where('id',$id)->update($data);
+        $blog=Blog::find($id)->update($data);
+        // กลับไปยังหน้าที่เรียกใช้ฟังก์ชันนี้
+        return redirect()->back();
     }
 
     function edit($id){
-        $blog=DB::table('blogs')->where('id',$id)->first();
+        // $blog=DB::table('blogs')->where('id',$id)->first();
+        $blog=Blog::find($id);
         // dd($blog);
         return view('edit',compact('blog'));
     }
@@ -96,7 +100,10 @@ class AdminController extends Controller
             'updated_at'=>$time
         ];
         // DB::table('blogs')->where('id',$id)->update($data);
-        DB::insert($data);
+        $blog = Blog::find($id)->update($data);
+        if($blog){
+            $blog->update($data);
+        }
         return redirect('/all');
     }
 }
